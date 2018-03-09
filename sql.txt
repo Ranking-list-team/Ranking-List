@@ -1,0 +1,118 @@
+drop table if exists blogarticle;
+
+drop table if exists microblog;
+
+drop table if exists users;
+
+drop table if exists wechatArticle;
+
+drop table if exists wechatOfficialAccount;
+
+drop table if exists zhihu;
+
+drop table if exists zhihuArticle;
+
+/*==============================================================*/
+/* Table: blogarticle                                           */
+/*==============================================================*/
+create table blogarticle
+(
+   innerID              bigint not null auto_increment,
+   wechatID             varchar(32),
+   comments             bigint,
+   forward              bigint,
+   likes                bigint,
+   primary key (innerID)
+);
+
+/*==============================================================*/
+/* Table: microblog                                             */
+/*==============================================================*/
+create table microblog
+(
+   innerID              bigint not null auto_increment,
+   microblogID          varchar(32),
+   follower             bigint,
+   primary key (innerID)
+);
+
+/*==============================================================*/
+/* Table: users                                                 */
+/*==============================================================*/
+create table users
+(
+   用户ID                 bigint not null auto_increment,
+   userName             varchar(32) not null,
+   password             varchar(32) not null,
+   microblogID          varchar(32),
+   wechatID             varchar(32),
+   zhihuID              varchar(32),
+   primary key (用户ID)
+);
+
+/*==============================================================*/
+/* Table: wechatArticle                                         */
+/*==============================================================*/
+create table wechatArticle
+(
+   articleID            bigint not null auto_increment,
+   officialAccountID    varchar(32),
+   views                bigint,
+   likes                bigint,
+   comments             bigint,
+   primary key (articleID)
+);
+
+/*==============================================================*/
+/* Table: wechatOfficialAccount                                 */
+/*==============================================================*/
+create table wechatOfficialAccount
+(
+   innerID              bigint not null auto_increment,
+   officialAccountID    varchar(32),
+   suscriber            bigint,
+   primary key (innerID)
+);
+
+/*==============================================================*/
+/* Table: zhihu                                                 */
+/*==============================================================*/
+create table zhihu
+(
+   innerID              bigint not null auto_increment,
+   zhihuID              varchar(32),
+   follower             bigint,
+   likes                bigint,
+   appreciate           bigint,
+   primary key (innerID)
+);
+
+/*==============================================================*/
+/* Table: zhihuArticle                                          */
+/*==============================================================*/
+create table zhihuArticle
+(
+   articleID            bigint not null auto_increment,
+   zhihuID              varchar(32),
+   likes                bigint,
+   comments             bigint,
+   primary key (articleID)
+);
+
+alter table blogarticle add constraint FK_Reference_4 foreign key (wechatID)
+      references microblog (microblogID) on delete restrict on update restrict;
+
+alter table microblog add constraint FK_Reference_1 foreign key (innerID)
+      references users (microblogID) on delete restrict on update restrict;
+
+alter table wechatArticle add constraint FK_Reference_5 foreign key (officialAccountID)
+      references wechatOfficialAccount (officialAccountID) on delete restrict on update restrict;
+
+alter table wechatOfficialAccount add constraint FK_Reference_2 foreign key (innerID)
+      references users (wechatID) on delete restrict on update restrict;
+
+alter table zhihu add constraint FK_Reference_3 foreign key (innerID)
+      references users (zhihuID) on delete restrict on update restrict;
+
+alter table zhihuArticle add constraint FK_Reference_6 foreign key (zhihuID)
+      references zhihu (zhihuID) on delete restrict on update restrict;
